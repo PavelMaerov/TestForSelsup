@@ -6,14 +6,12 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.sql.Timestamp;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLongArray;
 
 import static java.lang.Thread.currentThread;
-import static java.lang.Thread.sleep;
 
 /* Третий вариант решения задачи
    Создаем пул задач на отправку запросов - ScheduledThreadPool
@@ -63,7 +61,6 @@ public class CrptApiWithScheduledThreadPool { //все поля можно сд�
         //разрешенному количеству отправок в единицу времени.
         sendTimes = new AtomicLongArray(requestLimit);
     }
-
     /**
      * Создание документа для ввода в оборот товара, произведенного в РФ.
      * Документ и подпись должны передаваться в метод в виде Java объекта и строки соответственно.
@@ -80,7 +77,8 @@ public class CrptApiWithScheduledThreadPool { //все поля можно сд�
         //исполнять этот блок во время постановки задачи в очередь
         HttpRequest request;
         synchronized (timeUnit) {
-            request = builder.POST(HttpRequest.BodyPublishers.ofString(json)).build();
+            request = builder.header("signature", signature)
+                    .POST(HttpRequest.BodyPublishers.ofString(json)).build();
         }
         //Готовим задачу для постановки в пул
         Runnable task = () -> {

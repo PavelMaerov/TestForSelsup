@@ -7,6 +7,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
@@ -65,7 +66,8 @@ public class CrptApiWithSynchronizedBlock { //все поля можно сде�
         //исполнять этот блок во время отправки запроса
         HttpRequest request;
         synchronized (timeUnit) {
-            request = builder.POST(HttpRequest.BodyPublishers.ofString(json)).build();
+            request = builder.header("signature", signature)
+                    .POST(HttpRequest.BodyPublishers.ofString(json)).build();
         }
         logger.debug(LocalTime.now() + " Поток " + threadName + " - перед синхронизированным блоком");
 
@@ -97,5 +99,40 @@ public class CrptApiWithSynchronizedBlock { //все поля можно сде�
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
         logger.debug(LocalTime.now() + " Метод createDoc послал запрос из потока " + threadName + " и закончил работу");
     }
+}
+
+//Последующие классы должены лежать в отдельных файлах
+//Помещаю их здесь только по требованию задания
+//Классы реализованы простейшим образом без геттеров и сеттеров
+class INN {
+    public String participantInn;
+}
+
+class Product {
+    public String certificate_document;
+    public LocalDate certificate_document_date;
+    public String certificate_document_number;
+    public String owner_inn;
+    public String producer_inn;
+    public LocalDate production_date;
+    public String tnved_code;
+    public String uit_code;
+    public String uitu_code;
+}
+
+class Doc {
+    public INN description;
+    public String doc_id;
+    public String doc_status;
+    public String doc_type = "LP_INTRODUCE_GOODS";
+    public boolean importRequest;
+    public String owner_inn;
+    public String participant_inn;
+    public String producer_inn;
+    public LocalDate production_date;
+    public String production_type;
+    public Product[] products;
+    public LocalDate reg_date;
+    public String reg_number;
 }
 

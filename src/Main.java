@@ -17,8 +17,8 @@ public class Main {
         //Здесь все три варианта обеспечивают не более 3х посылок запросов за 1 секунду.
 
         //CrptApiWithSemaphore crptApi = new CrptApiWithSemaphore(TimeUnit.SECONDS, 3);
-        //CrptApiWithSynchronizedBlock crptApi = new CrptApiWithSynchronizedBlock(TimeUnit.SECONDS, 3);
-        CrptApiWithScheduledThreadPool crptApi = new CrptApiWithScheduledThreadPool(TimeUnit.MINUTES, 3);
+        CrptApiWithSynchronizedBlock crptApi = new CrptApiWithSynchronizedBlock(TimeUnit.SECONDS, 3);
+        //CrptApiWithScheduledThreadPool crptApi = new CrptApiWithScheduledThreadPool(TimeUnit.SECONDS, 3);
         Doc doc = new Doc();
         Runnable task = ()-> {  //создаем задачу лямбдой
             try {

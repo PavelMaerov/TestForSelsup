@@ -3,7 +3,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Duration;
 import java.util.concurrent.Semaphore;
@@ -59,7 +58,8 @@ public class CrptApiWithSemaphore { //все поля можно сделать 
         //и разные потоки могут помешать друг другу
         HttpRequest request;
         synchronized (this) {
-            request = builder.POST(HttpRequest.BodyPublishers.ofString(json)).build();
+            request = builder.header("signature", signature)
+                    .POST(HttpRequest.BodyPublishers.ofString(json)).build();
         }
         logger.debug(LocalTime.now() + " Поток " + threadName + " - перед семафором");
 
@@ -88,41 +88,6 @@ public class CrptApiWithSemaphore { //все поля можно сделать 
             semaphore.release();
         }
     }
-}
-
-//Этот класс должен лежать в отдельном файле, также как и вложенные классы
-//Помещаю класс Doc здесь только по требованию задания
-//Последующие классы реализованы простейшим образом без геттеров и сеттеров
-class INN {
-    public String participantInn;
-}
-
-class Product {
-    public String certificate_document;
-    public LocalDate certificate_document_date;
-    public String certificate_document_number;
-    public String owner_inn;
-    public String producer_inn;
-    public LocalDate production_date;
-    public String tnved_code;
-    public String uit_code;
-    public String uitu_code;
-}
-
-class Doc {
-    public INN description;
-    public String doc_id;
-    public String doc_status;
-    public String doc_type = "LP_INTRODUCE_GOODS";
-    public boolean importRequest;
-    public String owner_inn;
-    public String participant_inn;
-    public String producer_inn;
-    public LocalDate production_date;
-    public String production_type;
-    public Product[] products;
-    public LocalDate reg_date;
-    public String reg_number;
 }
 
 
